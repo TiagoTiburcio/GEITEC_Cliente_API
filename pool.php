@@ -1,5 +1,5 @@
 <?php
-$token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3Esvv6MfPo3ToCYonYY2nsc7SAuM0owlkEh62XHU';
+require_once("class/principal.php");
 
 ?>
 <!DOCTYPE html>

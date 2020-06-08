@@ -1,22 +1,13 @@
 <?php
-$token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3Esvv6MfPo3ToCYonYY2nsc7SAuM0owlkEh62XHU';
+require_once("class/principal.php");
+$token = Principal::token();
 $nomeRecurso = 'servidor';
+echo Principal::cabecalho($nomeRecurso);
+//$opcoes = Principal::opcoes($nomeRecurso);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-    <title><?= strtoupper($nomeRecurso); ?> Adm</title>
-</head>
 
 <body>
-    <div class="col-xs-12">
-        <button id="adicionar" class="btn btn-primary">Add <?= strtoupper($nomeRecurso); ?></button>
-    </div>
+    <?= Principal::opcoes($nomeRecurso);?>
     <div id="<?= $nomeRecurso; ?>-editar" style="display: none;">
         <div class="form-group">
             <label for="codigo">Codigo:</label>

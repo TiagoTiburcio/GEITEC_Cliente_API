@@ -1,23 +1,13 @@
 <?php
-$token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3Esvv6MfPo3ToCYonYY2nsc7SAuM0owlkEh62XHU';
-
+require_once("class/principal.php");
+$token = Principal::token();
+$nomeRecurso = 'so';
+echo Principal::cabecalho($nomeRecurso);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-    <title>Pool Adm</title>
-</head>
 
 <body>
-    <div class="col-xs-12">
-        <button id="adicionar" class="btn btn-primary">Add SO</button>
-    </div>
-    <div id="so-editar" style="display: none;">
+    <?= Principal::opcoes($nomeRecurso); ?>    
+    <div id="<?= $nomeRecurso; ?>-editar" style="display: none;">
         <div class="form-group">
             <label for="codigo">Codigo:</label>
             <input type="text" class="form-control" readonly id="codigo">
@@ -38,10 +28,10 @@ $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3E
             <label for="dataAtu">Data Atualização:</label>
             <input type="text" class="form-control" readonly id="dataAtu">
         </div>
-        <button id="salvar_so" class="btn btn-success">Salvar</button>
-        <button id="delete_so" class="btn btn-danger">Deletar</button>
+        <button id="salvar_<?= $nomeRecurso; ?>" class="btn btn-success">Salvar</button>
+        <button id="delete_<?= $nomeRecurso; ?>" class="btn btn-danger">Deletar</button>
     </div>
-    <div id="so-listar" class="col-xs-12">
+    <div id="<?= $nomeRecurso; ?>-listar" class="col-xs-12">
         <table id="lista" class="table table-striped table-condensed">
             <thead>
                 <tr>
@@ -74,9 +64,9 @@ $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3E
             return;
         }
         if (inp_codigo.val() == "") {
-            storeSO(inp_nome.val(),inp_descricao.val());
+            storeSO(inp_nome.val(), inp_descricao.val());
         } else {
-            updateSO(inp_codigo.val(), inp_nome.val(),inp_descricao.val());
+            updateSO(inp_codigo.val(), inp_nome.val(), inp_descricao.val());
         }
         divEditar.toggle();
         divListar.toggle();
@@ -135,7 +125,7 @@ $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3E
         divEditar.find("#nome").val("");
         divEditar.find("#descricao").val("");
         divEditar.find("#dataCriacao").val("");
-        divEditar.find("#dataAtu").val("");        
+        divEditar.find("#dataAtu").val("");
     }
 
     function storeSO(nome, descricao) {
@@ -216,8 +206,7 @@ $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3E
     }
     $(function() {
         carregaLista();
-    });    
-    
+    });
 </script>
 
 </html>
