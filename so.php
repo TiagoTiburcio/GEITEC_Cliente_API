@@ -1,61 +1,40 @@
 <?php
 require_once("class/principal.php");
-$token = Principal::token();
 $nomeRecurso = 'so';
-echo Principal::cabecalho($nomeRecurso);
+$principal = new Principal($nomeRecurso);
+$token = $principal->token();
+$input = [
+    [   'nome' => 'nome',
+        'tipo_input' => "text",
+        'descricao' => "Nome",
+        'table' => true 
+    ],
+    [   'nome' => 'descricao',
+        'tipo_input' => "text",
+        'descricao' => "Descrição",
+        'table' => true
+    ]
+];
+echo $principal->cabecalho($nomeRecurso);
 ?>
 
 <body>
     <?= Principal::opcoes($nomeRecurso); ?>    
-    <div id="<?= $nomeRecurso; ?>-editar" style="display: none;">
-        <div class="form-group">
-            <label for="codigo">Codigo:</label>
-            <input type="text" class="form-control" readonly id="codigo">
-        </div>
-        <div class="form-group">
-            <label for="nome">Nome:</label>
-            <input type="text" class="form-control" id="nome">
-        </div>
-        <div class="form-group">
-            <label for="descricao">Descricao:</label>
-            <input type="text" class="form-control" id="descricao">
-        </div>
-        <div class="form-group">
-            <label for="dataCriacao">Data Criação:</label>
-            <input type="text" class="form-control" readonly id="dataCriacao">
-        </div>
-        <div class="form-group">
-            <label for="dataAtu">Data Atualização:</label>
-            <input type="text" class="form-control" readonly id="dataAtu">
-        </div>
-        <button id="salvar_<?= $nomeRecurso; ?>" class="btn btn-success">Salvar</button>
-        <button id="delete_<?= $nomeRecurso; ?>" class="btn btn-danger">Deletar</button>
-    </div>
-    <div id="<?= $nomeRecurso; ?>-listar" class="col-xs-12">
-        <table id="lista" class="table table-striped table-condensed">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Descricao</th>
-                    <th>Manut</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+    <?= Principal::formEdit($nomeRecurso,true,true,$input); ?>    
+    <?= Principal::criaLista($nomeRecurso,$input); ?>
 </body>
 <script src="js/jquery.js"></script>
 <script src="js/api/funcoes_ajax.js"></script>
 <script>
     var token = '<?= $token; ?>';
-    var btn_save = $("#salvar_so");
-    var btn_del = $("#delete_so");
+    var btn_save = $("#salvar_<?= $nomeRecurso;?>");
+    var btn_del = $("#delete_<?= $nomeRecurso;?>");
     var btn_add = $("#adicionar");
-
+    function buscarDivPrincipais() {
+        
+    }
     btn_save.on("click", function() {
-        var divEditar = $("#so-editar");
-        var divListar = $("#so-listar");
+        buscarDivPrincipais();
         var inp_codigo = divEditar.find("#codigo");
         var inp_nome = divEditar.find("#nome");
         var inp_descricao = divEditar.find("#descricao");
@@ -64,7 +43,7 @@ echo Principal::cabecalho($nomeRecurso);
             return;
         }
         if (inp_codigo.val() == "") {
-            storeSO(inp_nome.val(), inp_descricao.val());
+            store(inp_nome.val(), inp_descricao.val());
         } else {
             updateSO(inp_codigo.val(), inp_nome.val(), inp_descricao.val());
         }
@@ -74,8 +53,7 @@ echo Principal::cabecalho($nomeRecurso);
     });
 
     btn_del.on("click", function() {
-        var divEditar = $("#so-editar");
-        var divListar = $("#so-listar");
+        buscarDivPrincipais();
         var inp_codigo = divEditar.find("#codigo");
         if (inp_codigo.val() != "") {
             deleteSO(inp_codigo.val());
@@ -87,8 +65,7 @@ echo Principal::cabecalho($nomeRecurso);
     });
 
     btn_add.on("click", function() {
-        var divEditar = $("#so-editar");
-        var divListar = $("#so-listar");
+        buscarDivPrincipais();
         divEditar.toggle();
         divListar.toggle();
         if (divEditar.attr("style") == 'display: none;') {
@@ -120,7 +97,7 @@ echo Principal::cabecalho($nomeRecurso);
 
     function montaEdit() {
         btn_add.text("Listar SO");
-        var divEditar = $("#so-editar");
+        buscarDivPrincipais();
         divEditar.find("#codigo").val("");
         divEditar.find("#nome").val("");
         divEditar.find("#descricao").val("");
@@ -150,8 +127,7 @@ echo Principal::cabecalho($nomeRecurso);
 
     function carregaEdit(codigo) {
         btn_add.text("Listar SO");
-        var divEditar = $("#so-editar");
-        var divListar = $("#so-listar");
+        buscarDivPrincipais()
         divEditar.toggle();
         divListar.toggle();
         var dc = getTodos('so/' + codigo);
@@ -204,6 +180,9 @@ echo Principal::cabecalho($nomeRecurso);
         });
         return dados;
     }
+
+    
+
     $(function() {
         carregaLista();
     });
