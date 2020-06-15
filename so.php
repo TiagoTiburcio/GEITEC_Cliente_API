@@ -1,8 +1,6 @@
 <?php
 require_once("class/principal.php");
 $nomeRecurso = 'so';
-$principal = new Principal($nomeRecurso);
-$token = $principal->token();
 $input = [
     [   'nome' => 'nome',
         'tipo_input' => "text",
@@ -15,45 +13,31 @@ $input = [
         'table' => true
     ]
 ];
-echo $principal->cabecalho($nomeRecurso);
+
+$principal = new Principal($nomeRecurso, $input);
+$token = $principal->token();
+
+echo $principal->cabecalho();
 ?>
 
 <body>
-    <?= Principal::opcoes($nomeRecurso); ?>    
-    <?= Principal::formEdit($nomeRecurso,true,true,$input); ?>    
-    <?= Principal::criaLista($nomeRecurso,$input); ?>
+    <?= $principal->opcoes(); ?>    
+    <?= $principal->formEdit(true,true,$input); ?>    
+    <?= $principal->criaLista($input); ?>
 </body>
 <script src="js/jquery.js"></script>
 <script src="js/api/funcoes_ajax.js"></script>
 <script>
     var token = '<?= $token; ?>';
-    var btn_save = $("#salvar_<?= $nomeRecurso;?>");
-    var btn_del = $("#delete_<?= $nomeRecurso;?>");
-    var btn_add = $("#adicionar");
-    function buscarDivPrincipais() {
-        
-    }
-    btn_save.on("click", function() {
-        buscarDivPrincipais();
-        var inp_codigo = divEditar.find("#codigo");
-        var inp_nome = divEditar.find("#nome");
-        var inp_descricao = divEditar.find("#descricao");
-        if (inp_nome.val() == "") {
-            alert("Campo Nome não pode ser vazio!!!");
-            return;
-        }
-        if (inp_codigo.val() == "") {
-            store(inp_nome.val(), inp_descricao.val());
-        } else {
-            updateSO(inp_codigo.val(), inp_nome.val(), inp_descricao.val());
-        }
-        divEditar.toggle();
-        divListar.toggle();
-        carregaLista();
-    });
 
+    <?= $principal->btnAddJS(); ?>
+    <?= $principal->btnSaveJS(); ?>
+
+    
+    
+    var btn_del = $("#delete_<?= $nomeRecurso;?>");
     btn_del.on("click", function() {
-        buscarDivPrincipais();
+        <?= $principal->selectDivPricipaisJS(); ?>
         var inp_codigo = divEditar.find("#codigo");
         if (inp_codigo.val() != "") {
             deleteSO(inp_codigo.val());
@@ -64,17 +48,7 @@ echo $principal->cabecalho($nomeRecurso);
         carregaLista();
     });
 
-    btn_add.on("click", function() {
-        buscarDivPrincipais();
-        divEditar.toggle();
-        divListar.toggle();
-        if (divEditar.attr("style") == 'display: none;') {
-            carregaLista();
-        } else {
-            montaEdit();
-        }
-    });
-
+    
     function carregaLista() {
         btn_add.text("Add SO");
         var dcs = getTodos('so');
@@ -97,7 +71,7 @@ echo $principal->cabecalho($nomeRecurso);
 
     function montaEdit() {
         btn_add.text("Listar SO");
-        buscarDivPrincipais();
+        <?= $principal->selectDivPricipaisJS(); ?>
         divEditar.find("#codigo").val("");
         divEditar.find("#nome").val("");
         divEditar.find("#descricao").val("");
@@ -127,7 +101,7 @@ echo $principal->cabecalho($nomeRecurso);
 
     function carregaEdit(codigo) {
         btn_add.text("Listar SO");
-        buscarDivPrincipais()
+        <?= $principal->selectDivPricipaisJS();?>
         divEditar.toggle();
         divListar.toggle();
         var dc = getTodos('so/' + codigo);

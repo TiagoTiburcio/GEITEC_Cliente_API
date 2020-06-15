@@ -9,22 +9,25 @@
 class Principal
 {
     private $nomeRecurso;
+    private $inputs;
 
-    public function __construct($nomeRecurso)
+    public function __construct($nomeRecurso, $inputs)
     {
         $this->nomeRecurso = $nomeRecurso;
+        $this->inputs = $inputs;
     }
-    
-    
+
+
     public static function token($usuario = ""): string
     {
         // aqui deve ser implementada lógica buscar token no banco de dados do $usuario
-        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.CoshUvB4nV9VFw0HYyNddBqTORy1UpF21siLS6wWMM4";
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3Esvv6MfPo3ToCYonYY2nsc7SAuM0owlkEh62XHU";
 
         return $token;
     }
 
-    public static function cabecalho($nomeRecurso)    {   
+    public function cabecalho()
+    {
         $html = '<!DOCTYPE html>'
             . '<html lang="en">'
             . '<head>'
@@ -32,7 +35,7 @@ class Principal
             . '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
             . '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">'
             . '<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">'
-            . '<title>' . strtoupper($nomeRecurso) . ' Adm</title>'
+            . '<title>' . strtoupper($this->nomeRecurso) . ' Adm</title>'
             . '</head>';
         return $html;
     }
@@ -44,9 +47,10 @@ class Principal
             . '</div>';
         return $html;
     }
-    public function formEdit($nomeRecurso, $codigo = true, $datas = true, $inputs)    {
-        
-        $divPrincipal = '<div id="' . $nomeRecurso . '-editar" style="display: none;">';
+    public function formEdit($codigo = true, $datas = true, $inputs)
+    {
+
+        $divPrincipal = '<div id="' . $this->nomeRecurso . '-editar" style="display: none;">';
         $inputs = $this->inputs($codigo, $datas, $inputs);
         $botoes = '<button id="salvar_<?= $nomeRecurso; ?>" class="btn btn-success">Salvar</button>'
             . '<button id="delete_<?= $nomeRecurso; ?>" class="btn btn-danger">Deletar</button>';
@@ -99,9 +103,9 @@ class Principal
         return $input;
     }
 
-    public static function criaLista($nomeRecurso, $inputs)
+    public function criaLista($inputs)
     {
-        $html = '<div id="' . $nomeRecurso . '-listar" class="col-xs-12">'
+        $html = '<div id="' . $this->nomeRecurso . '-listar" class="col-xs-12">'
             . '<table id="lista" class="table table-striped table-condensed">'
             . '<thead>'
             . '<tr>';
@@ -123,8 +127,72 @@ class Principal
 
     public function selectDivPricipaisJS()
     {
-        $js = 'var divEditar = $("#'. $nomeRecurso . '-editar");'
-            . 'var divListar = $("#'.$nomeRecurso . '-listar");';
+        $js = 'var divEditar = $("#' . $this->nomeRecurso . '-editar");'
+            . 'var divListar = $("#' . $this->nomeRecurso . '-listar");';
         return $js;
+    }
+
+    public function btnAddJS()
+    {
+        $html = 'var btn_add = $("#adicionar");'
+            . 'btn_add.on("click", function() {'
+            . $this->selectDivPricipaisJS()
+            . 'divEditar.toggle();'
+            . 'divListar.toggle();'
+            . 'if (divEditar.attr("style") == "display: none;") {'
+            . 'carregaLista();'
+            . '} else {'
+            . 'montaEdit();'
+            . '}'
+            . '});';
+        return $html;
+    }
+
+    public function btnSaveJS()
+    {
+        $qtd = (count($this->inputs) - 1);
+        $html = 'var btn_save = $("#salvar_' . $this->nomeRecurso . '");'
+            . 'btn_save.on("click", function() {'
+            . $this->selectDivPricipaisJS()
+            . $this->importaInputsJS()
+            . $this->validaInputsVaziosJS()
+            . 'if (inp_codigo.val() == "") {'
+            . 'store(';            
+        foreach ($this->inputs as $key => $value) {
+            $html = $html . 'inp_'. $value['nome'] . '.val()';
+            if ($qtd <> $key){
+                $html = $html . ', ';
+            }
+        }
+        $html = $html . ');'
+            . '} else {'
+            . 'updateSO(inp_codigo.val(), inp_nome.val(), inp_descricao.val());'
+            . '}'
+            . 'divEditar.toggle();'
+            . 'divListar.toggle();'
+            . 'carregaLista();'
+            . '});';
+        return $html;
+    }
+
+    private function importaInputsJS()
+    {
+        $html = 'var inp_codigo = divEditar.find("#codigo");';
+        foreach ($this->inputs as $value) {
+            $html = $html . 'var inp_' . $value['nome'] . ' = divEditar.find("#' . $value['nome'] . '");';
+        }
+        return $html;
+    }
+
+    private function validaInputsVaziosJS()
+    {
+        $html = '';
+        foreach ($this->inputs as $value) {
+            $html = $html . 'if (inp_' . $value['nome'] . '.val() == "") {'
+                . 'alert("Campo ' . $value['nome'] . ' não pode ser vazio!!!");'
+                . 'return;'
+                . '}';
+        }
+        return $html;
     }
 }
