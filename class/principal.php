@@ -153,9 +153,9 @@ class Principal
         $qtd = (count($this->inputs) - 1);
         $html = 'var btn_save = $("#salvar_' . $this->nomeRecurso . '");'
             . 'btn_save.on("click", function() {'
-            . $this->selectDivPricipaisJS() . "\n"
-            . $this->importaInputsJS() . "\n"
-            . $this->validaInputsVaziosJS() . "\n"
+            . $this->selectDivPricipaisJS() . PHP_EOL
+            . $this->importaInputsJS() . PHP_EOL
+            . $this->validaInputsVaziosJS() . PHP_EOL
             . 'if (inp_codigo.val() == "") {'
             . 'salvar(' . $this->retornaValorInputsJS() . ');'
             . '} else {'
@@ -164,7 +164,7 @@ class Principal
             . 'divEditar.toggle();'
             . 'divListar.toggle();'
             . 'carregaLista();'
-            . '}); ' . "\n";
+            . '}); ' . PHP_EOL;
         return $html;
     }
 
@@ -236,12 +236,12 @@ class Principal
             }
         }
 
-        $html =  $html . '} }'. "\n".' var dados = $.ajax(settings, function(data) {
+        $html =  $html . '} }' . PHP_EOL . ' var dados = $.ajax(settings, function(data) {
                 return data;
             });
             return dados;
         }';
-        $html =  $html . 'function atualizar(codigo, nome, descricao) {
+        $html =  $html . ' function atualizar(codigo, nome, descricao) {
             var settings = {
                 "async": true,
                 "method": "POST",
@@ -279,6 +279,79 @@ class Principal
             });
             return dados;
         }';
+
+        return $html;
+    }
+
+    public function montaEditJS()
+    {
+        $html = ' function montaEdit() {
+            btn_add.text("Listar SO");'
+            . $this->selectDivPricipaisJS()
+            . 'divEditar.find("#codigo").val("");';
+        foreach ($this->inputs as $value) {
+            $html = $html . 'divEditar.find("#'. $value['nome'].'").val("");';
+        }
+        $html = $html . 'divEditar.find("#dataCriacao").val("");
+            divEditar.find("#dataAtu").val("");
+        }';
+        return $html;
+    }
+
+    public function carregaEditJS()
+    {
+        $html = 'function carregaEdit(codigo) {
+            btn_add.text("Listar SO");'
+            . $this->selectDivPricipaisJS()
+            .'divEditar.toggle();
+            divListar.toggle();'. PHP_EOL
+            .'var dc = getTodos("'. $this->nomeRecurso .'/" + codigo);' . PHP_EOL
+            .'var inp_codigo = divEditar.find("#codigo");' . PHP_EOL;
+            
+            foreach ($this->inputs as $value) {
+                $html = $html . 'var inp_'. $value['nome'].' = divEditar.find("#'. $value['nome'].'");' . PHP_EOL;
+            }
+            
+            $html = $html .'var inp_dataCre = divEditar.find("#dataCriacao");' . PHP_EOL
+            .'var inp_dataAtu = divEditar.find("#dataAtu");'
+            .'dc.done(function(data) {'
+               .'inp_codigo.val(data.codigo);'
+               .'inp_nome.val(data.nome);'
+               .'inp_desc.val(data.descricao);'
+               .'inp_dataCre.val(data.created_at)'
+               .'inp_dataAtu.val(data.updated_at);'
+            .'});     }';
+            return $html;
+    }
+    public function carregaListaJS()
+    {
+        $html = ' function carregaLista() { '
+            . ' btn_add.text("Add ' . strtoupper($this->nomeRecurso) . '");'
+            . ' var dcs = getTodos("' . $this->nomeRecurso . '");' . PHP_EOL
+            . ' var tabela = $("#lista").find("tbody");' . PHP_EOL
+            . ' tabela.empty();' . PHP_EOL
+            . ' dcs.done(function(data) {' . PHP_EOL
+            . ' for (let index = 0; index < data.length; index++) {' . PHP_EOL
+            . ' const element = data[index];' . PHP_EOL
+            . ' var linha = $("<tr>");';
+
+        foreach ($this->inputs as $value) {
+            if ($value['table']) {
+                $html =  $html . 'var ' . $value['nome'] . ' = $("<td>").text(element.' . $value['nome'] . ');' . PHP_EOL;
+            }
+        }
+
+        $html = $html . 'var link = $("<button>").text("Editar").attr("class", "btn btn-warning edit-dc").attr("id", element.codigo).attr("onClick", "carregaEdit(" + element.codigo + ");");' . PHP_EOL
+            . 'var edit = $("<td>").append(link);' . PHP_EOL
+            . 'linha';
+        foreach ($this->inputs as $key => $value) {
+            if ($value['table']) {
+                $html =  $html . '.append(' . $value['nome'] . ')';
+            }
+        }
+        $html = $html . '.append(edit);'
+            . 'tabela.append(linha); }'
+            . '} ); }';
 
         return $html;
     }
