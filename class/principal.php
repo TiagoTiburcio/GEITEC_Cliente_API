@@ -52,8 +52,8 @@ class Principal
 
         $divPrincipal = '<div id="' . $this->nomeRecurso . '-editar" style="display: none;">';
         $inputs = $this->inputs($codigo, $datas, $inputs);
-        $botoes = '<button id="salvar_<?= $nomeRecurso; ?>" class="btn btn-success">Salvar</button>'
-            . '<button id="delete_<?= $nomeRecurso; ?>" class="btn btn-danger">Deletar</button>';
+        $botoes = '<button id="salvar_' . $this->nomeRecurso . '" class="btn btn-success">Salvar</button>'
+            . '<button id="delete_' . $this->nomeRecurso . '" class="btn btn-danger">Deletar</button>';
         $divPrincipal = $divPrincipal . $inputs . $botoes;
         $divPrincipal = $divPrincipal . '</div>';
         return $divPrincipal;
@@ -153,28 +153,32 @@ class Principal
         $qtd = (count($this->inputs) - 1);
         $html = 'var btn_save = $("#salvar_' . $this->nomeRecurso . '");'
             . 'btn_save.on("click", function() {'
-            . $this->selectDivPricipaisJS()
-            . $this->importaInputsJS()
-            . $this->validaInputsVaziosJS()
+            . $this->selectDivPricipaisJS() . "\n"
+            . $this->importaInputsJS() . "\n"
+            . $this->validaInputsVaziosJS() . "\n"
             . 'if (inp_codigo.val() == "") {'
-            . 'store(';            
-        foreach ($this->inputs as $key => $value) {
-            $html = $html . 'inp_'. $value['nome'] . '.val()';
-            if ($qtd <> $key){
-                $html = $html . ', ';
-            }
-        }
-        $html = $html . ');'
+            . 'salvar(' . $this->retornaValorInputsJS() . ');'
             . '} else {'
-            . 'updateSO(inp_codigo.val(), inp_nome.val(), inp_descricao.val());'
+            . 'atualizar(inp_codigo.val(), ' . $this->retornaValorInputsJS() . ');'
             . '}'
             . 'divEditar.toggle();'
             . 'divListar.toggle();'
             . 'carregaLista();'
-            . '});';
+            . '}); ' . "\n";
         return $html;
     }
 
+    private function retornaValorInputsJS()
+    {
+        $html = '';
+        foreach ($this->inputs as $key => $value) {
+            $html = $html . 'inp_' . $value['nome'] . '.val()';
+            if (count($this->inputs) <> ($key + 1)) {
+                $html = $html . ', ';
+            }
+        }
+        return $html;
+    }
     private function importaInputsJS()
     {
         $html = 'var inp_codigo = divEditar.find("#codigo");';
@@ -193,6 +197,89 @@ class Principal
                 . 'return;'
                 . '}';
         }
+        return $html;
+    }
+
+    public function btnDelJS()
+    {
+        $html = 'var btn_del = $("#delete_' . $this->nomeRecurso . '");'
+            . 'btn_del.on("click", function() {'
+            . $this->selectDivPricipaisJS()
+            . 'var inp_codigo = divEditar.find("#codigo");'
+            . 'if (inp_codigo.val() != "") {'
+            . 'deletar(inp_codigo.val());'
+            . '}'
+            . 'divEditar.toggle();'
+            . 'divListar.toggle();'
+            . 'carregaLista();'
+            . '});';
+        return $html;
+    }
+
+    public function addAjaxJS()
+    {
+        $html = 'function salvar(nome, descricao) {'
+            . ' var settings = {
+                "async": true,
+                "method": "POST",
+                "url": "/api/index.php/infraestrutura/' . $this->nomeRecurso . '/",
+                "headers": {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "Bearer " + token
+                },
+                "data": {';
+
+        foreach ($this->inputs as $key => $value) {
+            $html =  $html . '"' . $value['nome'] . '" : ' . $value['nome'];
+            if (count($this->inputs) <> ($key + 1)) {
+                $html = $html . ', ';
+            }
+        }
+
+        $html =  $html . '} }'. "\n".' var dados = $.ajax(settings, function(data) {
+                return data;
+            });
+            return dados;
+        }';
+        $html =  $html . 'function atualizar(codigo, nome, descricao) {
+            var settings = {
+                "async": true,
+                "method": "POST",
+                "url": "/api/index.php/infraestrutura/' . $this->nomeRecurso . '/" + codigo + "/edit",
+                "headers": {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "Bearer " + token
+                },
+                "data": {';
+        foreach ($this->inputs as $key => $value) {
+            $html =  $html . '"' . $value['nome'] . '" : ' . $value['nome'];
+            if (count($this->inputs) <> ($key + 1)) {
+                $html = $html . ', ';
+            }
+        }
+        $html =  $html . '} }
+            var dados = $.ajax(settings, function(data) {
+                return data;
+            });
+            return dados;
+        }';
+
+        $html =  $html . 'function deletar(codigo) {
+            var settings = {
+                "async": true,
+                "method": "POST",
+                "url": "/api/index.php/infraestrutura/' . $this->nomeRecurso . '/" + codigo + "/delete",
+                "headers": {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "Bearer " + token
+                }
+            }
+            var dados = $.ajax(settings, function(data) {
+                return data;
+            });
+            return dados;
+        }';
+
         return $html;
     }
 }

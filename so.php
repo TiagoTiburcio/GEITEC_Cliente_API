@@ -32,23 +32,8 @@ echo $principal->cabecalho();
 
     <?= $principal->btnAddJS(); ?>
     <?= $principal->btnSaveJS(); ?>
+    <?= $principal->btnDelJS(); ?>
 
-    
-    
-    var btn_del = $("#delete_<?= $nomeRecurso;?>");
-    btn_del.on("click", function() {
-        <?= $principal->selectDivPricipaisJS(); ?>
-        var inp_codigo = divEditar.find("#codigo");
-        if (inp_codigo.val() != "") {
-            deleteSO(inp_codigo.val());
-        }
-        divEditar.toggle();
-        divListar.toggle();
-
-        carregaLista();
-    });
-
-    
     function carregaLista() {
         btn_add.text("Add SO");
         var dcs = getTodos('so');
@@ -78,27 +63,7 @@ echo $principal->cabecalho();
         divEditar.find("#dataCriacao").val("");
         divEditar.find("#dataAtu").val("");
     }
-
-    function storeSO(nome, descricao) {
-        var settings = {
-            "async": true,
-            "method": "POST",
-            "url": "/api/index.php/infraestrutura/so/",
-            "headers": {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": "Bearer " + token
-            },
-            "data": {
-                "nome": nome,
-                "descricao": descricao
-            }
-        }
-        var dados = $.ajax(settings, function(data) {
-            return data;
-        });
-        return dados;
-    }
-
+    
     function carregaEdit(codigo) {
         btn_add.text("Listar SO");
         <?= $principal->selectDivPricipaisJS();?>
@@ -119,42 +84,7 @@ echo $principal->cabecalho();
         });
     }
 
-    function updateSO(codigo, nome, descricao) {
-        var settings = {
-            "async": true,
-            "method": "POST",
-            "url": "/api/index.php/infraestrutura/so/" + codigo + "/edit",
-            "headers": {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": "Bearer " + token
-            },
-            "data": {
-                "nome": nome,
-                "descricao": descricao
-            }
-        }
-        var dados = $.ajax(settings, function(data) {
-            return data;
-        });
-        return dados;
-    }
-
-    function deleteSO(codigo) {
-        var settings = {
-            "async": true,
-            "method": "POST",
-            "url": "/api/index.php/infraestrutura/so/" + codigo + "/delete",
-            "headers": {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": "Bearer " + token
-            }
-        }
-        var dados = $.ajax(settings, function(data) {
-            return data;
-        });
-        return dados;
-    }
-
+    <?= $principal->addAjaxJS(); ?>
     
 
     $(function() {
