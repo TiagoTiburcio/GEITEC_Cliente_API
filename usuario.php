@@ -1,47 +1,29 @@
 <?php
 require_once("class/principal.php");
-$nomeRecurso = 'rede';
+$nomeRecurso = 'usuario';
 $input = [
     [
-        'nome' => 'nome',
+        'nome' => 'usuario',
         'tipo_input' => "text",
-        'descricao' => "Nome",
+        'descricao' => "Usuario",
         'table' => true
     ],
     [
-        'nome' => 'ip_rede',
+        'nome' => 'descricao',
         'tipo_input' => "text",
-        'descricao' => "Ip Rede",
+        'descricao' => "Descricao",
         'table' => true
     ],
     [
-        'nome' => 'subnet',
+        'nome' => 'tipo_usuario',
         'tipo_input' => "text",
-        'descricao' => "Subnet",
+        'descricao' => "Tipo Usuario",
         'table' => true
     ],
     [
-        'nome' => 'gateway',
+        'nome' => 'codigo_servico',
         'tipo_input' => "text",
-        'descricao' => "Gateway",
-        'table' => true
-    ],
-    [
-        'nome' => 'dns_principal',
-        'tipo_input' => "text",
-        'descricao' => "DNS Principal",
-        'table' => false    
-    ],
-    [
-        'nome' => 'dns_secundario',
-        'tipo_input' => "text",
-        'descricao' => "DNS Secundario",
-        'table' => false
-    ],
-    [
-        'nome' => 'tipo_rede',
-        'tipo_input' => "text",
-        'descricao' => "Tipo Rede",
+        'descricao' => "Codigo Serviço",
         'table' => true
     ]
 ];

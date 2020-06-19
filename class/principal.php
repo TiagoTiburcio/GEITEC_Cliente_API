@@ -156,14 +156,14 @@ class Principal
             . $this->selectDivPricipaisJS() . PHP_EOL
             . $this->importaInputsJS() . PHP_EOL
             . $this->validaInputsVaziosJS() . PHP_EOL
-            . 'if (inp_codigo.val() == "") {'
-            . 'salvar(' . $this->retornaValorInputsJS() . ');'
-            . '} else {'
-            . 'atualizar(inp_codigo.val(), ' . $this->retornaValorInputsJS() . ');'
-            . '}'
-            . 'divEditar.toggle();'
-            . 'divListar.toggle();'
-            . 'carregaLista();'
+            . 'if (inp_codigo.val() == "") {' . PHP_EOL
+            . 'salvar(' . $this->retornaValorInputsJS() . ');' . PHP_EOL
+            . '} else {' . PHP_EOL
+            . 'atualizar(inp_codigo.val(), ' . $this->retornaValorInputsJS() . ');' . PHP_EOL
+            . '}' . PHP_EOL
+            . 'divEditar.toggle();' . PHP_EOL
+            . 'divListar.toggle();' . PHP_EOL
+            . 'carregaLista();' . PHP_EOL
             . '}); ' . PHP_EOL;
         return $html;
     }
@@ -218,7 +218,14 @@ class Principal
 
     public function addAjaxJS()
     {
-        $html = 'function salvar(nome, descricao) {'
+        $html = 'function salvar(';
+        foreach ($this->inputs as $key => $value) {
+            $html = $html . $value['nome'];
+            if (count($this->inputs) <> ($key + 1)) {
+                $html = $html . ', ';
+            }
+        }
+        $html = $html .') {'
             . ' var settings = {
                 "async": true,
                 "method": "POST",
@@ -241,28 +248,35 @@ class Principal
             });
             return dados;
         }';
-        $html =  $html . ' function atualizar(codigo, nome, descricao) {
-            var settings = {
-                "async": true,
-                "method": "POST",
-                "url": "/api/index.php/infraestrutura/' . $this->nomeRecurso . '/" + codigo + "/edit",
-                "headers": {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Authorization": "Bearer " + token
-                },
-                "data": {';
+        $html =  $html . ' function atualizar(codigo, ';
+        foreach ($this->inputs as $key => $value) {
+            $html = $html . $value['nome'];
+            if (count($this->inputs) <> ($key + 1)) {
+                $html = $html . ', ';
+            }
+        }
+        $html = $html .') {'
+            . 'var settings = {' . PHP_EOL
+            . '"async": true,' . PHP_EOL
+            . '"method": "POST",' . PHP_EOL
+            . '"url": "/api/index.php/infraestrutura/' . $this->nomeRecurso . '/" + codigo + "/edit",' . PHP_EOL
+            . '"headers": {' . PHP_EOL
+            . '"Content-Type": "application/x-www-form-urlencoded",' . PHP_EOL
+            . '"Authorization": "Bearer " + token ' . PHP_EOL
+            . '},' . PHP_EOL
+            . '"data": {';
         foreach ($this->inputs as $key => $value) {
             $html =  $html . '"' . $value['nome'] . '" : ' . $value['nome'];
             if (count($this->inputs) <> ($key + 1)) {
                 $html = $html . ', ';
             }
         }
-        $html =  $html . '} }
-            var dados = $.ajax(settings, function(data) {
-                return data;
-            });
-            return dados;
-        }';
+        $html =  $html . '} }' . PHP_EOL
+            . 'var dados = $.ajax(settings, function(data) {' . PHP_EOL
+            . 'return data;' . PHP_EOL
+            . '});' . PHP_EOL
+            . 'return dados;' . PHP_EOL
+            . '}';
 
         $html =  $html . 'function deletar(codigo) {
             var settings = {
@@ -286,11 +300,11 @@ class Principal
     public function montaEditJS()
     {
         $html = ' function montaEdit() {
-            btn_add.text("Listar SO");'
+            btn_add.text("Listar ' . strtoupper($this->nomeRecurso) . '");'
             . $this->selectDivPricipaisJS()
             . 'divEditar.find("#codigo").val("");';
         foreach ($this->inputs as $value) {
-            $html = $html . 'divEditar.find("#'. $value['nome'].'").val("");';
+            $html = $html . 'divEditar.find("#' . $value['nome'] . '").val("");';
         }
         $html = $html . 'divEditar.find("#dataCriacao").val("");
             divEditar.find("#dataAtu").val("");
@@ -301,27 +315,29 @@ class Principal
     public function carregaEditJS()
     {
         $html = 'function carregaEdit(codigo) {
-            btn_add.text("Listar SO");'
+            btn_add.text("Listar ' . strtoupper($this->nomeRecurso) . '");'
             . $this->selectDivPricipaisJS()
-            .'divEditar.toggle();
-            divListar.toggle();'. PHP_EOL
-            .'var dc = getTodos("'. $this->nomeRecurso .'/" + codigo);' . PHP_EOL
-            .'var inp_codigo = divEditar.find("#codigo");' . PHP_EOL;
-            
-            foreach ($this->inputs as $value) {
-                $html = $html . 'var inp_'. $value['nome'].' = divEditar.find("#'. $value['nome'].'");' . PHP_EOL;
-            }
-            
-            $html = $html .'var inp_dataCre = divEditar.find("#dataCriacao");' . PHP_EOL
-            .'var inp_dataAtu = divEditar.find("#dataAtu");'
-            .'dc.done(function(data) {'
-               .'inp_codigo.val(data.codigo);'
-               .'inp_nome.val(data.nome);'
-               .'inp_desc.val(data.descricao);'
-               .'inp_dataCre.val(data.created_at)'
-               .'inp_dataAtu.val(data.updated_at);'
-            .'});     }';
-            return $html;
+            . 'divEditar.toggle();
+            divListar.toggle();' . PHP_EOL
+            . 'var dc = getTodos("' . $this->nomeRecurso . '/" + codigo);' . PHP_EOL
+            . 'var inp_codigo = divEditar.find("#codigo");' . PHP_EOL;
+
+        foreach ($this->inputs as $value) {
+            $html = $html . 'var inp_' . $value['nome'] . ' = divEditar.find("#' . $value['nome'] . '");' . PHP_EOL;
+        }
+
+        $html = $html . 'var inp_dataCre = divEditar.find("#dataCriacao");' . PHP_EOL
+            . 'var inp_dataAtu = divEditar.find("#dataAtu"); ' . PHP_EOL
+            . 'dc.done(function(data) {' . PHP_EOL
+            . 'inp_codigo.val(data.codigo);' . PHP_EOL;
+
+        foreach ($this->inputs as $value) {
+            $html = $html . 'inp_' . $value['nome'] . '.val(data.' . $value['nome'] . ');' . PHP_EOL;
+        }
+        $html = $html . 'inp_dataCre.val(data.created_at)' . PHP_EOL
+            . 'inp_dataAtu.val(data.updated_at);' . PHP_EOL
+            . '});     }' . PHP_EOL;
+        return $html;
     }
     public function carregaListaJS()
     {

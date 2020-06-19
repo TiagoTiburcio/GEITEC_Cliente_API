@@ -1,6 +1,6 @@
 <?php
 require_once("class/principal.php");
-$nomeRecurso = 'rede';
+$nomeRecurso = 'servico';
 $input = [
     [
         'nome' => 'nome',
@@ -9,39 +9,27 @@ $input = [
         'table' => true
     ],
     [
-        'nome' => 'ip_rede',
+        'nome' => 'descricao',
         'tipo_input' => "text",
-        'descricao' => "Ip Rede",
+        'descricao' => "Descricao",
         'table' => true
     ],
     [
-        'nome' => 'subnet',
+        'nome' => 'tipo_servico',
         'tipo_input' => "text",
-        'descricao' => "Subnet",
+        'descricao' => "Memoria",
         'table' => true
     ],
     [
-        'nome' => 'gateway',
+        'nome' => 'situacao',
         'tipo_input' => "text",
-        'descricao' => "Gateway",
+        'descricao' => "Situacao",
         'table' => true
     ],
     [
-        'nome' => 'dns_principal',
+        'nome' => 'codigo_servidor',
         'tipo_input' => "text",
-        'descricao' => "DNS Principal",
-        'table' => false    
-    ],
-    [
-        'nome' => 'dns_secundario',
-        'tipo_input' => "text",
-        'descricao' => "DNS Secundario",
-        'table' => false
-    ],
-    [
-        'nome' => 'tipo_rede',
-        'tipo_input' => "text",
-        'descricao' => "Tipo Rede",
+        'descricao' => "Codigo Servidor",
         'table' => true
     ]
 ];
