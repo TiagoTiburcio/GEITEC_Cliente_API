@@ -292,8 +292,23 @@ class Principal
                 return data;
             });
             return dados;
+        }' . PHP_EOL
+        .'function getTodos(categoria) {
+            var settings = {
+                "async": true,
+                "url": "/api/index.php/infraestrutura/" + categoria,
+                "headers": {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "Bearer " + token
+                }
+            }
+            
+        
+            var dados = $.get(settings, function (data) {
+                return data;
+            });
+            return dados;
         }';
-
         return $html;
     }
 

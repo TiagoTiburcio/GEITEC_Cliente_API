@@ -26,7 +26,6 @@ echo $principal->cabecalho();
     <?= $principal->criaLista($input); ?>
 </body>
 <script src="js/jquery.js"></script>
-<script src="js/api/funcoes_ajax.js"></script>
 <script>
     var token = '<?= $token; ?>';
 
