@@ -50,7 +50,7 @@ class Principal
     public function formEdit($codigo = true, $datas = true, $inputs)
     {
 
-        $divPrincipal = '<div id="' . $this->nomeRecurso . '-editar" style="display: none;">';
+        $divPrincipal = '<div id="' . $this->nomeRecurso . '-editar" style="display: none;">'. PHP_EOL;
         $inputs = $this->inputs($codigo, $datas, $inputs);
         $botoes = '<button id="salvar_' . $this->nomeRecurso . '" class="btn btn-success">Salvar</button>'
             . '<button id="delete_' . $this->nomeRecurso . '" class="btn btn-danger">Deletar</button>';
@@ -66,10 +66,10 @@ class Principal
         $inp_datas = "";
         //Input Codigo
         if ($codigo) {
-            $inp_codigo = '<div class="form-group">'
-                . '<label for="codigo">Codigo:</label>'
-                . '<input type="text" class="form-control" readonly id="codigo">'
-                . '</div>';
+            $inp_codigo = '<div class="form-group">'. PHP_EOL
+                . '<label for="codigo">Codigo:</label>'. PHP_EOL
+                . '<input type="text" class="form-control" readonly id="codigo">'. PHP_EOL
+                . '</div>'. PHP_EOL;
         }
         // Inputs Gerais
         $inp_geral = "";
