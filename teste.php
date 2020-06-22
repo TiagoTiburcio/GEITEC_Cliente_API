@@ -1,6 +1,6 @@
 <?php
 require_once("class/principal.php");
-$nomeRecurso = 'pool';
+$nomeRecurso = 'disco';
 $input = [
     [
         'nome' => 'nome',
@@ -9,10 +9,25 @@ $input = [
         'table' => true
     ],
     [
-        'nome' => 'codigo_datacenter',
+        'nome' => 'tamanho',
         'tipo_input' => "text",
-        'descricao' => "Codigo Datacenter",
+        'descricao' => "Tamanho",
         'table' => true
+    ],
+    [
+        'nome' => 'codigo_servidor',
+        'tipo_input' => "text",
+        'descricao' => "Codigo Servidor",
+        'table' => true
+    ],
+    [
+        'nome' => 'codigo_ds',
+        'tipo_input' => "select",
+        'descricao' => "Data Store",
+        'table' => true,
+        'recurso' => 'ds',
+        'codigo_recuso' => 'codigo',
+        'nome_recurso' => 'nome'
     ]
 ];
 
@@ -27,45 +42,18 @@ echo $principal->cabecalho();
     <?= $principal->formEdit(true, true, $input); ?>
     <?= $principal->criaLista($input); ?>
 
-    <div class="form-group">
-        <label for="codigo_so_pk">Sistema Operacional</label>
-        <select class="form-control" id="codigo_so_pk" name="codigo_so_pk" form="form">
-        </select>
-    </div>
+    
 
 </body>
 <script src="js/jquery.js"></script>
 <script>
     var token = '<?= $token; ?>';
 
-    <?= $principal->btnAddJS(); ?>
-    <?= $principal->btnSaveJS(); ?>
-    <?= $principal->btnDelJS(); ?>
-    <?= $principal->carregaListaJS(); ?>
-    <?= $principal->montaEditJS(); ?>
-    <?= $principal->carregaEditJS(); ?>
-    <?= $principal->addAjaxJS(); ?>
-
-    function carregaSO(codigoSO) {
-        var sos = getTodos('so');
-        var select = $("#codigo_so_pk");
-        sos.done(function(data) {
-            for (let index = 0; index < data.length; index++) {
-                const element = data[index];
-                var linha = $("<option>");
-                linha.val(element.codigo);
-                linha.text(element.nome);
-                if (codigoSO == element.codigo) {
-                    linha.attr('selected', 'true');
-                }                
-                select.append(linha);
-            }
-        });
-
-    }
+    <?= $principal->saidaJS(); ?>
+    
+    
     $(function() {
-        carregaLista();
-        carregaSO('1');
+        carregaLista();        
     });
 </script>
 

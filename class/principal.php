@@ -10,6 +10,8 @@ class Principal
 {
     private $nomeRecurso;
     private $inputs;
+    private $javaScript;
+
 
     public function __construct($nomeRecurso, $inputs)
     {
@@ -21,7 +23,7 @@ class Principal
     public static function token($usuario = ""): string
     {
         // aqui deve ser implementada lógica buscar token no banco de dados do $usuario
-        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3Esvv6MfPo3ToCYonYY2nsc7SAuM0owlkEh62XHU";
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.CoshUvB4nV9VFw0HYyNddBqTORy1UpF21siLS6wWMM4";
 
         return $token;
     }
@@ -50,7 +52,7 @@ class Principal
     public function formEdit($codigo = true, $datas = true, $inputs)
     {
 
-        $divPrincipal = '<div id="' . $this->nomeRecurso . '-editar" style="display: none;">'. PHP_EOL;
+        $divPrincipal = '<div id="' . $this->nomeRecurso . '-editar" style="display: none;">' . PHP_EOL;
         $inputs = $this->inputs($codigo, $datas, $inputs);
         $botoes = '<button id="salvar_' . $this->nomeRecurso . '" class="btn btn-success">Salvar</button>'
             . '<button id="delete_' . $this->nomeRecurso . '" class="btn btn-danger">Deletar</button>';
@@ -66,10 +68,10 @@ class Principal
         $inp_datas = "";
         //Input Codigo
         if ($codigo) {
-            $inp_codigo = '<div class="form-group">'. PHP_EOL
-                . '<label for="codigo">Codigo:</label>'. PHP_EOL
-                . '<input type="text" class="form-control" readonly id="codigo">'. PHP_EOL
-                . '</div>'. PHP_EOL;
+            $inp_codigo = '<div class="form-group">' . PHP_EOL
+                . '<label for="codigo">Codigo:</label>' . PHP_EOL
+                . '<input type="text" class="form-control" readonly id="codigo">' . PHP_EOL
+                . '</div>' . PHP_EOL;
         }
         // Inputs Gerais
         $inp_geral = "";
@@ -97,6 +99,32 @@ class Principal
                 . '<label for="' . $dados['nome'] . '">' . $dados['descricao'] . ':</label>'
                 . '<input type="text" class="form-control" id="' . $dados['nome'] . '">'
                 . '</div>';
+        } elseif ($dados['tipo_input'] == 'select') {
+
+            $input = '<div class="form-group">'  . PHP_EOL
+                . '<label for="' . $dados['nome'] . '">' . $dados['descricao'] . ':</label>' . PHP_EOL
+                . '<select class="form-control" id="' . $dados['nome'] . '" name="' . $dados['nome'] . '" form="form">' . PHP_EOL
+                . '</select>' . PHP_EOL
+                . '</div>';
+
+            $this->javaScript =  $this->javaScript . PHP_EOL .' function carrega' . strtoupper($dados['recurso']) . '(codigo' . strtoupper($dados['recurso']) . ') {' . PHP_EOL
+                . 'var recurso = getTodos("' . $dados['recurso'] . '");' . PHP_EOL
+                . 'var select = $("#' . $dados['nome'] . '");' . PHP_EOL
+                . '$("#' . $dados['nome'] . ' option").remove();' . PHP_EOL                
+                . 'recurso.done(function(data) {' . PHP_EOL
+                . 'for (let index = 0; index < data.length; index++) {' . PHP_EOL
+                . 'const element = data[index];' . PHP_EOL
+                . 'var linha = $("<option>");' . PHP_EOL
+                . 'linha.val(element.'. $dados['codigo_recuso'] .');' . PHP_EOL
+                . 'linha.text(element.'. $dados['nome_recurso'] .');' . PHP_EOL
+                . 'if (codigoDS == element.'. $dados['codigo_recuso'] .') {' . PHP_EOL
+                . 'linha.attr("selected", "true");' . PHP_EOL
+                . '}' . PHP_EOL . 'select.append(linha);' . PHP_EOL
+                . '}' . PHP_EOL . '}); } '. PHP_EOL
+                . 'function inputSelecionado' . strtoupper($dados['recurso']) . '() {'. PHP_EOL    
+                . 'var optionSelected = $("#' . $dados['nome'] . ' option:selected");' . PHP_EOL
+                . 'return optionSelected.val();'. PHP_EOL
+                . '};';
         } else {
             $input = "Tipo Input Não cadastrado: " . $dados['tipo_input'];
         }
@@ -105,22 +133,22 @@ class Principal
 
     public function criaLista($inputs)
     {
-        $html = '<div id="' . $this->nomeRecurso . '-listar" class="col-xs-12">'
-            . '<table id="lista" class="table table-striped table-condensed">'
-            . '<thead>'
-            . '<tr>';
+        $html = '<div id="' . $this->nomeRecurso . '-listar" class="col-xs-12">' . PHP_EOL
+            . '<table id="lista" class="table table-striped table-condensed">' . PHP_EOL
+            . '<thead>' . PHP_EOL
+            . '<tr>' . PHP_EOL;
         foreach ($inputs as $value) {
             if ($value['table']) {
-                $html = $html . '<th>' . $value['descricao'] . '</th>';
+                $html = $html . '<th>' . $value['descricao'] . '</th>' . PHP_EOL;
             }
         }
         $html = $html
-            . '<th>Manut</th>'
-            . '</tr>'
-            . '</thead>'
-            . '<tbody></tbody>'
-            . '</table>'
-            . '</div>';
+            . '<th>Manut</th>'. PHP_EOL
+            . '</tr>'. PHP_EOL
+            . '</thead>'. PHP_EOL
+            . '<tbody></tbody>'. PHP_EOL
+            . '</table>'. PHP_EOL
+            . '</div>'. PHP_EOL;
 
         return $html;
     }
@@ -134,25 +162,25 @@ class Principal
 
     public function btnAddJS()
     {
-        $html = 'var btn_add = $("#adicionar");'
-            . 'btn_add.on("click", function() {'
-            . $this->selectDivPricipaisJS()
-            . 'divEditar.toggle();'
-            . 'divListar.toggle();'
-            . 'if (divEditar.attr("style") == "display: none;") {'
-            . 'carregaLista();'
-            . '} else {'
-            . 'montaEdit();'
-            . '}'
-            . '});';
+        $html = 'var btn_add = $("#adicionar");' . PHP_EOL
+            . 'btn_add.on("click", function() {'. PHP_EOL
+            . $this->selectDivPricipaisJS() . PHP_EOL
+            . 'divEditar.toggle();'. PHP_EOL
+            . 'divListar.toggle();'. PHP_EOL
+            . 'if (divEditar.attr("style") == "display: none;") {'. PHP_EOL
+            . 'carregaLista();'. PHP_EOL
+            . '} else {'. PHP_EOL
+            . 'montaEdit();'. PHP_EOL
+            . '}'. PHP_EOL
+            . '});'. PHP_EOL;
         return $html;
     }
 
     public function btnSaveJS()
     {
         $qtd = (count($this->inputs) - 1);
-        $html = 'var btn_save = $("#salvar_' . $this->nomeRecurso . '");'
-            . 'btn_save.on("click", function() {'
+        $html = 'var btn_save = $("#salvar_' . $this->nomeRecurso . '");' . PHP_EOL
+            . 'btn_save.on("click", function() {' . PHP_EOL
             . $this->selectDivPricipaisJS() . PHP_EOL
             . $this->importaInputsJS() . PHP_EOL
             . $this->validaInputsVaziosJS() . PHP_EOL
@@ -172,7 +200,11 @@ class Principal
     {
         $html = '';
         foreach ($this->inputs as $key => $value) {
-            $html = $html . 'inp_' . $value['nome'] . '.val()';
+            if ($value['tipo_input'] == 'text') {
+                $html = $html . 'inp_' . $value['nome'] . '.val()';
+            }elseif ($value['tipo_input'] == 'select') {
+                $html = $html . 'inputSelecionado' . strtoupper($value['recurso']) . '()';
+            }
             if (count($this->inputs) <> ($key + 1)) {
                 $html = $html . ', ';
             }
@@ -192,10 +224,13 @@ class Principal
     {
         $html = '';
         foreach ($this->inputs as $value) {
-            $html = $html . 'if (inp_' . $value['nome'] . '.val() == "") {'
-                . 'alert("Campo ' . $value['nome'] . ' não pode ser vazio!!!");'
-                . 'return;'
-                . '}';
+            if ($value['tipo_input'] == 'text') {
+                $html = $html . 'if (inp_' . $value['nome'] . '.val() == "") {'
+                    . 'alert("Campo ' . $value['nome'] . ' não pode ser vazio!!!");'
+                    . 'return;'
+                    . '}';    
+            }
+            
         }
         return $html;
     }
@@ -225,7 +260,7 @@ class Principal
                 $html = $html . ', ';
             }
         }
-        $html = $html .') {'
+        $html = $html . ') {'
             . ' var settings = {
                 "async": true,
                 "method": "POST",
@@ -255,7 +290,7 @@ class Principal
                 $html = $html . ', ';
             }
         }
-        $html = $html .') {'
+        $html = $html . ') {'
             . 'var settings = {' . PHP_EOL
             . '"async": true,' . PHP_EOL
             . '"method": "POST",' . PHP_EOL
@@ -293,7 +328,7 @@ class Principal
             });
             return dados;
         }' . PHP_EOL
-        .'function getTodos(categoria) {
+            . 'function getTodos(categoria) {
             var settings = {
                 "async": true,
                 "url": "/api/index.php/infraestrutura/" + categoria,
@@ -319,7 +354,12 @@ class Principal
             . $this->selectDivPricipaisJS()
             . 'divEditar.find("#codigo").val("");';
         foreach ($this->inputs as $value) {
-            $html = $html . 'divEditar.find("#' . $value['nome'] . '").val("");';
+            if ($value['tipo_input'] == 'text') {
+                $html = $html . 'divEditar.find("#' . $value['nome'] . '").val("");'. PHP_EOL;
+            }elseif ($value['tipo_input'] == 'select') {
+                $html = $html . 'carrega'. strtoupper($value['recurso']) . '();'. PHP_EOL;
+            }
+            
         }
         $html = $html . 'divEditar.find("#dataCriacao").val("");
             divEditar.find("#dataAtu").val("");
@@ -332,8 +372,8 @@ class Principal
         $html = 'function carregaEdit(codigo) {
             btn_add.text("Listar ' . strtoupper($this->nomeRecurso) . '");'
             . $this->selectDivPricipaisJS()
-            . 'divEditar.toggle();
-            divListar.toggle();' . PHP_EOL
+            . 'divEditar.toggle();' . PHP_EOL
+            . 'divListar.toggle();' . PHP_EOL
             . 'var dc = getTodos("' . $this->nomeRecurso . '/" + codigo);' . PHP_EOL
             . 'var inp_codigo = divEditar.find("#codigo");' . PHP_EOL;
 
@@ -347,7 +387,12 @@ class Principal
             . 'inp_codigo.val(data.codigo);' . PHP_EOL;
 
         foreach ($this->inputs as $value) {
-            $html = $html . 'inp_' . $value['nome'] . '.val(data.' . $value['nome'] . ');' . PHP_EOL;
+            if ($value['tipo_input'] == 'text') {
+                $html = $html . 'inp_' . $value['nome'] . '.val(data.' . $value['nome'] . ');' . PHP_EOL;
+            }elseif ($value['tipo_input'] == 'select') { 
+                $html = $html . 'carrega'. strtoupper($value['recurso']) . '(data.' . $value['nome'] . ');'. PHP_EOL; 
+            }
+            
         }
         $html = $html . 'inp_dataCre.val(data.created_at)' . PHP_EOL
             . 'inp_dataAtu.val(data.updated_at);' . PHP_EOL
@@ -356,8 +401,8 @@ class Principal
     }
     public function carregaListaJS()
     {
-        $html = ' function carregaLista() { '
-            . ' btn_add.text("Add ' . strtoupper($this->nomeRecurso) . '");'
+        $html = ' function carregaLista() { ' . PHP_EOL
+            . ' btn_add.text("Add ' . strtoupper($this->nomeRecurso) . '");' . PHP_EOL
             . ' var dcs = getTodos("' . $this->nomeRecurso . '");' . PHP_EOL
             . ' var tabela = $("#lista").find("tbody");' . PHP_EOL
             . ' tabela.empty();' . PHP_EOL
@@ -385,5 +430,19 @@ class Principal
             . '} ); }';
 
         return $html;
+    }
+
+    public function saidaJS()
+    {
+        $retorno = 
+             $this->btnAddJS()
+            . $this->btnSaveJS()
+            . $this->btnDelJS()
+            . $this->carregaListaJS()
+            . $this->montaEditJS()
+            . $this->carregaEditJS()
+            . $this->addAjaxJS()
+            . $this->javaScript;
+        return $retorno;
     }
 }
