@@ -26,7 +26,7 @@ $input = [
         'descricao' => "Data Store",
         'table' => true,
         'recurso' => 'ds',
-        'codigo_recuso' => 'codigo',
+        'codigo_recurso' => 'codigo',
         'nome_recurso' => 'nome'
     ]
 ];
