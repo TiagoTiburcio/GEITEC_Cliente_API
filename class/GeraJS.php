@@ -104,88 +104,96 @@ class GeraJS
             . '});';
         return $html;
     }
-    private function addAjaxSalvar()
+
+    private function addAjaxSalvar($inputs, $nomeRecurso)
     {
-        # code...
-    }
-    public function addAjax()
-    {
-        $html = 'function salvar(';
-        foreach ($this->inputs as $key => $value) {
-            $html = $html . $value['nome'];
-            if (count($this->inputs) <> ($key + 1)) {
-                $html = $html . ', ';
+        $retorno = 'function salvar(';
+        foreach ($inputs as $key => $value) {
+            $retorno = $retorno . $value['nome'];
+            if (count($inputs) <> ($key + 1)) {
+                $retorno = $retorno . ', ';
             }
         }
-        $html = $html . ') {'
+        $retorno = $retorno . ') {'
             . ' var settings = {
                 "async": true,
                 "method": "POST",
-                "url": "/api/index.php/infraestrutura/' . $this->nomeRecurso . '/",
+                "url": "/api/index.php/infraestrutura/' . $nomeRecurso . '/",
                 "headers": {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "Authorization": "Bearer " + token
                 },
                 "data": {';
-
-        foreach ($this->inputs as $key => $value) {
-            $html =  $html . '"' . $value['nome'] . '" : ' . $value['nome'];
-            if (count($this->inputs) <> ($key + 1)) {
-                $html = $html . ', ';
+        foreach ($inputs as $key => $value) {
+            $retorno =  $retorno . '"' . $value['nome'] . '" : ' . $value['nome'];
+            if (count($inputs) <> ($key + 1)) {
+                $retorno = $retorno . ', ';
             }
         }
-
-        $html =  $html . '} }' . PHP_EOL . ' var dados = $.ajax(settings, function(data) {
+        $retorno =  $retorno . '} }' . PHP_EOL . ' var dados = $.ajax(settings, function(data) {
                 return data;
             });
             return dados;
         }';
-        $html =  $html . ' function atualizar(codigo, ';
-        foreach ($this->inputs as $key => $value) {
-            $html = $html . $value['nome'];
-            if (count($this->inputs) <> ($key + 1)) {
-                $html = $html . ', ';
+        return $retorno;
+    }
+    private function addAjaxAtualizar($inputs, $nomeRecurso)
+    {
+        $retorno = ' function atualizar(codigo, ';
+        foreach ($inputs as $key => $value) {
+            $retorno = $retorno . $value['nome'];
+            if (count($inputs) <> ($key + 1)) {
+                $retorno = $retorno . ', ';
             }
         }
-        $html = $html . ') {'
+        $retorno = $retorno . ') {'
             . 'var settings = {' . PHP_EOL
             . '"async": true,' . PHP_EOL
             . '"method": "POST",' . PHP_EOL
-            . '"url": "/api/index.php/infraestrutura/' . $this->nomeRecurso . '/" + codigo + "/edit",' . PHP_EOL
+            . '"url": "/api/index.php/infraestrutura/' . $nomeRecurso . '/" + codigo + "/edit",' . PHP_EOL
             . '"headers": {' . PHP_EOL
             . '"Content-Type": "application/x-www-form-urlencoded",' . PHP_EOL
             . '"Authorization": "Bearer " + token ' . PHP_EOL
             . '},' . PHP_EOL
             . '"data": {';
-        foreach ($this->inputs as $key => $value) {
-            $html =  $html . '"' . $value['nome'] . '" : ' . $value['nome'];
-            if (count($this->inputs) <> ($key + 1)) {
-                $html = $html . ', ';
+        foreach ($inputs as $key => $value) {
+            $retorno =  $retorno . '"' . $value['nome'] . '" : ' . $value['nome'];
+            if (count($inputs) <> ($key + 1)) {
+                $retorno = $retorno . ', ';
             }
         }
-        $html =  $html . '} }' . PHP_EOL
+        $retorno =  $retorno . '} }' . PHP_EOL
             . 'var dados = $.ajax(settings, function(data) {' . PHP_EOL
             . 'return data;' . PHP_EOL
             . '});' . PHP_EOL
             . 'return dados;' . PHP_EOL
             . '}';
+        return $retorno;
+    }
 
-        $html =  $html . 'function deletar(codigo) {
-            var settings = {
-                "async": true,
-                "method": "POST",
-                "url": "/api/index.php/infraestrutura/' . $this->nomeRecurso . '/" + codigo + "/delete",
-                "headers": {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Authorization": "Bearer " + token
-                }
-            }
-            var dados = $.ajax(settings, function(data) {
-                return data;
-            });
-            return dados;
-        }' . PHP_EOL
-            . 'function getTodos(categoria) {
+    private function addAjaxDel($nomeRecurso)
+    {
+        $retorno =  'function deletar(codigo) {' . PHP_EOL
+            . 'var settings = {' . PHP_EOL
+            . '"async": true,' . PHP_EOL
+            . '"method": "POST",' . PHP_EOL
+            . '"url": "/api/index.php/infraestrutura/' . $nomeRecurso . '/" + codigo + "/delete",' . PHP_EOL
+            . '"headers": {' . PHP_EOL
+            . '"Content-Type": "application/x-www-form-urlencoded",' . PHP_EOL
+            . '"Authorization": "Bearer " + token' . PHP_EOL
+            . '}' . PHP_EOL
+            . '}' . PHP_EOL
+            . 'var dados = $.ajax(settings, function(data) {' . PHP_EOL
+            . 'return data;' . PHP_EOL
+            . '});' . PHP_EOL
+            . 'return dados;' . PHP_EOL
+            . '}';
+        return $retorno;
+    }
+
+    private function addAjaxGetTodos()
+    {
+        $retorno = 'function getTodos(categoria) {
             var settings = {
                 "async": true,
                 "url": "/api/index.php/infraestrutura/" + categoria,
@@ -201,64 +209,73 @@ class GeraJS
             });
             return dados;
         }';
-        return $html;
+        return $retorno;
     }
 
-    public function montaEdit()
+    public function addAjax($nomeRecurso, $inputs)
     {
-        $html = ' function montaEdit() {
-            btn_add.text("Listar ' . strtoupper($this->nomeRecurso) . '");'
-            . $this->selectDivPricipaisJS()
+        $retorno = $this->addAjaxSalvar($inputs, $nomeRecurso)
+            . PHP_EOL . $this->addAjaxAtualizar($inputs, $nomeRecurso)
+            . PHP_EOL . $this->addAjaxDel($nomeRecurso)
+            . PHP_EOL . $this->addAjaxGetTodos();
+        return $retorno;
+    }
+
+    public function montaEdit($nomeRecurso, $inputs)
+    {
+        $retorno = ' function montaEdit() {
+            btn_add.text("Listar ' . strtoupper($nomeRecurso) . '");'
+            . $this->selectDivPricipais($nomeRecurso)
             . 'divEditar.find("#codigo").val("");';
-        foreach ($this->inputs as $value) {
+        foreach ($inputs as $value) {
             if ($value['tipo_input'] == 'text') {
-                $html = $html . 'divEditar.find("#' . $value['nome'] . '").val("");' . PHP_EOL;
+                $retorno = $retorno . 'divEditar.find("#' . $value['nome'] . '").val("");' . PHP_EOL;
             } elseif ($value['tipo_input'] == 'select') {
-                $html = $html . 'carrega' . strtoupper($value['recurso']) . '();' . PHP_EOL;
+                $retorno = $retorno . 'carrega' . strtoupper($value['recurso']) . '();' . PHP_EOL;
             }
         }
-        $html = $html . 'divEditar.find("#dataCriacao").val("");
+        $retorno = $retorno . 'divEditar.find("#dataCriacao").val("");
             divEditar.find("#dataAtu").val("");
         }';
-        return $html;
+        return $retorno;
     }
 
-    public function carregaEdit()
+    public function carregaEdit($nomeRecurso, $inputs)
     {
-        $html = 'function carregaEdit(codigo) {
-            btn_add.text("Listar ' . strtoupper($this->nomeRecurso) . '");'
-            . $this->selectDivPricipaisJS()
+        $retorno = 'function carregaEdit(codigo) {
+            btn_add.text("Listar ' . strtoupper($nomeRecurso) . '");'
+            . $this->selectDivPricipais($nomeRecurso)
             . 'divEditar.toggle();' . PHP_EOL
             . 'divListar.toggle();' . PHP_EOL
-            . 'var dc = getTodos("' . $this->nomeRecurso . '/" + codigo);' . PHP_EOL
+            . 'var dc = getTodos("' . $nomeRecurso . '/" + codigo);' . PHP_EOL
             . 'var inp_codigo = divEditar.find("#codigo");' . PHP_EOL;
 
-        foreach ($this->inputs as $value) {
-            $html = $html . 'var inp_' . $value['nome'] . ' = divEditar.find("#' . $value['nome'] . '");' . PHP_EOL;
+        foreach ($inputs as $value) {
+            $retorno = $retorno . 'var inp_' . $value['nome'] . ' = divEditar.find("#' . $value['nome'] . '");' . PHP_EOL;
         }
 
-        $html = $html . 'var inp_dataCre = divEditar.find("#dataCriacao");' . PHP_EOL
+        $retorno = $retorno . 'var inp_dataCre = divEditar.find("#dataCriacao");' . PHP_EOL
             . 'var inp_dataAtu = divEditar.find("#dataAtu"); ' . PHP_EOL
             . 'dc.done(function(data) {' . PHP_EOL
             . 'inp_codigo.val(data.codigo);' . PHP_EOL;
 
-        foreach ($this->inputs as $value) {
+        foreach ($inputs as $value) {
             if ($value['tipo_input'] == 'text') {
-                $html = $html . 'inp_' . $value['nome'] . '.val(data.' . $value['nome'] . ');' . PHP_EOL;
+                $retorno = $retorno . 'inp_' . $value['nome'] . '.val(data.' . $value['nome'] . ');' . PHP_EOL;
             } elseif ($value['tipo_input'] == 'select') {
-                $html = $html . 'carrega' . strtoupper($value['recurso']) . '(data.' . $value['nome'] . ');' . PHP_EOL;
+                $retorno = $retorno . 'carrega' . strtoupper($value['recurso']) . '(data.' . $value['nome'] . ');' . PHP_EOL;
             }
         }
-        $html = $html . 'inp_dataCre.val(data.created_at)' . PHP_EOL
+        $retorno = $retorno . 'inp_dataCre.val(data.created_at)' . PHP_EOL
             . 'inp_dataAtu.val(data.updated_at);' . PHP_EOL
-            . '});     }' . PHP_EOL;
-        return $html;
+            . '});     }' ;            
+        return $retorno;
     }
-    public function carregaLista()
+    public function carregaLista($nomeRecurso, $inputs)
     {
-        $html = ' function carregaLista() { ' . PHP_EOL
-            . ' btn_add.text("Add ' . strtoupper($this->nomeRecurso) . '");' . PHP_EOL
-            . ' var dcs = getTodos("' . $this->nomeRecurso . '");' . PHP_EOL
+        $retorno = ' function carregaLista() { ' . PHP_EOL
+            . ' btn_add.text("Add ' . strtoupper($nomeRecurso) . '");' . PHP_EOL
+            . ' var dcs = getTodos("' . $nomeRecurso . '");' . PHP_EOL
             . ' var tabela = $("#lista").find("tbody");' . PHP_EOL
             . ' tabela.empty();' . PHP_EOL
             . ' dcs.done(function(data) {' . PHP_EOL
@@ -266,25 +283,23 @@ class GeraJS
             . ' const element = data[index];' . PHP_EOL
             . ' var linha = $("<tr>");';
 
-        foreach ($this->inputs as $value) {
+        foreach ($inputs as $value) {
             if ($value['table']) {
-                $html =  $html . 'var ' . $value['nome'] . ' = $("<td>").text(element.' . $value['nome'] . ');' . PHP_EOL;
+                $retorno =  $retorno . 'var ' . $value['nome'] . ' = $("<td>").text(element.' . $value['nome'] . ');' . PHP_EOL;
             }
         }
-
-        $html = $html . 'var link = $("<button>").text("Editar").attr("class", "btn btn-warning edit-dc").attr("id", element.codigo).attr("onClick", "carregaEdit(" + element.codigo + ");");' . PHP_EOL
+        $retorno = $retorno . 'var link = $("<button>").text("Editar").attr("class", "btn btn-warning edit-dc").attr("id", element.codigo).attr("onClick", "carregaEdit(" + element.codigo + ");");' . PHP_EOL
             . 'var edit = $("<td>").append(link);' . PHP_EOL
             . 'linha';
-        foreach ($this->inputs as $key => $value) {
+        foreach ($inputs as $key => $value) {
             if ($value['table']) {
-                $html =  $html . '.append(' . $value['nome'] . ')';
+                $retorno =  $retorno . '.append(' . $value['nome'] . ')';
             }
         }
-        $html = $html . '.append(edit);'
+        $retorno = $retorno . '.append(edit);'
             . 'tabela.append(linha); }'
             . '} ); }';
-
-        return $html;
+        return $retorno;
     }
 
 
@@ -297,7 +312,7 @@ class GeraJS
 
     private function inputSelectCarrega($recurso, $nome, $codigo_recurso, $nome_recurso)
     {
-        $saida =  'function carrega' . strtoupper($recurso) . '(codigo' . strtoupper($recurso) . ') {' . PHP_EOL
+        $saida =  PHP_EOL . 'function carrega' . strtoupper($recurso) . '(codigo' . strtoupper($recurso) . ') {' . PHP_EOL
             . 'var recurso = getTodos("' . $recurso . '");' . PHP_EOL
             . 'var select = $("#' . $nome . '");' . PHP_EOL
             . '$("#' . $nome . ' option").remove();' . PHP_EOL
@@ -307,7 +322,7 @@ class GeraJS
             . 'var linha = $("<option>");' . PHP_EOL
             . 'linha.val(element.' . $codigo_recurso . ');' . PHP_EOL
             . 'linha.text(element.' . $nome_recurso . ');' . PHP_EOL
-            . 'if (codigoDS == element.' . $codigo_recurso . ') {' . PHP_EOL
+            . 'if (codigo' . strtoupper($recurso) . ' == element.' . $codigo_recurso . ') {' . PHP_EOL
             . 'linha.attr("selected", "true");' . PHP_EOL
             . '}' . PHP_EOL . 'select.append(linha);' . PHP_EOL
             . '}' . PHP_EOL . '}); } ';

@@ -11,26 +11,29 @@ $input = [
     [
         'nome' => 'descricao',
         'tipo_input' => "text",
-        'descricao' => "Descricao",
+        'descricao' => "Descrição",
         'table' => true
     ],
     [
         'nome' => 'tipo_servico',
         'tipo_input' => "text",
-        'descricao' => "Memoria",
+        'descricao' => "Tipo Servico",
         'table' => true
     ],
     [
         'nome' => 'situacao',
         'tipo_input' => "text",
-        'descricao' => "Situacao",
+        'descricao' => "Situação",
         'table' => true
     ],
     [
         'nome' => 'codigo_servidor',
-        'tipo_input' => "text",
-        'descricao' => "Codigo Servidor",
-        'table' => true
+        'tipo_input' => "select",
+        'descricao' => "Servidor",
+        'table' => true,
+        'recurso' => 'servidor',
+        'codigo_recurso' => 'codigo',
+        'nome_recurso' => 'nome'
     ]
 ];
 
@@ -43,24 +46,14 @@ echo $principal->cabecalho();
 <body>
     <?= $principal->opcoes(); ?>
     <?= $principal->formEdit(true, true, $input); ?>
-    <?= $principal->criaLista($input); ?>
+    <?= $principal->criaLista($input); ?>  
 </body>
 <script src="js/jquery.js"></script>
 <script>
     var token = '<?= $token; ?>';
 
-    <?= $principal->btnAddJS(); ?>
-    <?= $principal->btnSaveJS(); ?>
-    <?= $principal->btnDelJS(); ?>
-    <?= $principal->carregaListaJS(); ?>
-    <?= $principal->montaEditJS(); ?>
-    <?= $principal->carregaEditJS(); ?>
-    <?= $principal->addAjaxJS(); ?>
-
-
-    $(function() {
-        carregaLista();
-    });
+    <?= $principal->saidaJS(); ?>
+    
 </script>
 
 </html>

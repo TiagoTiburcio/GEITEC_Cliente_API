@@ -16,9 +16,12 @@ $input = [
     ],
     [
         'nome' => 'codigo_servidor',
-        'tipo_input' => "text",
-        'descricao' => "Codigo Servidor",
-        'table' => true
+        'tipo_input' => "select",
+        'descricao' => "Servidor",
+        'table' => true,
+        'recurso' => 'servidor',
+        'codigo_recurso' => 'codigo',
+        'nome_recurso' => 'nome'
     ],
     [
         'nome' => 'codigo_ds',
@@ -40,10 +43,7 @@ echo $principal->cabecalho();
 <body>
     <?= $principal->opcoes(); ?>
     <?= $principal->formEdit(true, true, $input); ?>
-    <?= $principal->criaLista($input); ?>
-
-    
-
+    <?= $principal->criaLista($input); ?>  
 </body>
 <script src="js/jquery.js"></script>
 <script>
@@ -51,10 +51,6 @@ echo $principal->cabecalho();
 
     <?= $principal->saidaJS(); ?>
     
-    
-    $(function() {
-        carregaLista();        
-    });
 </script>
 
 </html>

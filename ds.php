@@ -21,26 +21,16 @@ echo $principal->cabecalho();
 ?>
 
 <body>
-    <?= $principal->opcoes(); ?>    
-    <?= $principal->formEdit(true,true,$input); ?>    
-    <?= $principal->criaLista($input); ?>
+    <?= $principal->opcoes(); ?>
+    <?= $principal->formEdit(true, true, $input); ?>
+    <?= $principal->criaLista($input); ?>  
 </body>
 <script src="js/jquery.js"></script>
 <script>
     var token = '<?= $token; ?>';
 
-    <?= $principal->btnAddJS(); ?>
-    <?= $principal->btnSaveJS(); ?>
-    <?= $principal->btnDelJS(); ?>
-    <?= $principal->carregaListaJS(); ?>
-    <?= $principal->montaEditJS(); ?>
-    <?= $principal->carregaEditJS(); ?>
-    <?= $principal->addAjaxJS(); ?>
+    <?= $principal->saidaJS(); ?>
     
-
-    $(function() {
-        carregaLista();
-    });
 </script>
 
 </html>

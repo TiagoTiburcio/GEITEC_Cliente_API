@@ -16,15 +16,21 @@ $input = [
     ],
     [
         'nome' => 'codigo_servidor',
-        'tipo_input' => "text",
-        'descricao' => "Codigo Servidor",
-        'table' => true
+        'tipo_input' => "select",
+        'descricao' => "Servidor",
+        'table' => true,
+        'recurso' => 'servidor',
+        'codigo_recurso' => 'codigo',
+        'nome_recurso' => 'nome'
     ],
     [
         'nome' => 'codigo_ds',
-        'tipo_input' => "text",
-        'descricao' => "Codigo Data Store",
-        'table' => true
+        'tipo_input' => "select",
+        'descricao' => "Data Store",
+        'table' => true,
+        'recurso' => 'ds',
+        'codigo_recurso' => 'codigo',
+        'nome_recurso' => 'nome'
     ]
 ];
 
@@ -37,24 +43,14 @@ echo $principal->cabecalho();
 <body>
     <?= $principal->opcoes(); ?>
     <?= $principal->formEdit(true, true, $input); ?>
-    <?= $principal->criaLista($input); ?>
+    <?= $principal->criaLista($input); ?>  
 </body>
 <script src="js/jquery.js"></script>
 <script>
     var token = '<?= $token; ?>';
 
-    <?= $principal->btnAddJS(); ?>
-    <?= $principal->btnSaveJS(); ?>
-    <?= $principal->btnDelJS(); ?>
-    <?= $principal->carregaListaJS(); ?>
-    <?= $principal->montaEditJS(); ?>
-    <?= $principal->carregaEditJS(); ?>
-    <?= $principal->addAjaxJS(); ?>
-
-
-    $(function() {
-        carregaLista();
-    });
+    <?= $principal->saidaJS(); ?>
+    
 </script>
 
 </html>
