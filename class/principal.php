@@ -12,8 +12,7 @@ class Principal
 {
     private $nomeRecurso;
     private $inputs;
-    private $javaScript;
-    private $geraHtml;
+    private $javaScript;    
 
     public function __construct($nomeRecurso, $inputs)
     {
@@ -41,13 +40,13 @@ class Principal
     {
         return GeraHtml::cabecalho($this->nomeRecurso);
     }
-    public function opcoes()
+    public function opcoes($btns)
     {
-        return GeraHtml::opcoes($this->nomeRecurso);
+        return GeraHtml::opcoes($btns);
     }
-    public function formEdit($codigo = true, $datas = true, $inputs)
+    public function formEdit($inputs, $btns)
     {
-        return GeraHtml::formEdit($codigo, $datas, $inputs, $this->nomeRecurso);
+        return GeraHtml::formEdit($inputs, $btns, $this->nomeRecurso);
     }
 
     public function criaLista($inputs)

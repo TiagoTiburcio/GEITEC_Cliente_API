@@ -22,54 +22,54 @@ class GeraHtml
         return $html;
     }
 
-    public static function opcoes($nomeRecurso)
+    public static function opcoes($btns)
     {
         $html = '<div class="col-xs-12">'
-            . '<a class="btn btn-dark" href="index.php"> Inicio</a>'
-            . '<button id="adicionar" class="btn btn-primary">Add ' . strtoupper($nomeRecurso) . '</button>'
-            . '</div>';
+            . '<a class="btn btn-dark" href="index.php"> Inicio</a>';
+        foreach ($btns as $value) {
+            $html = $html . '<button id="' . $value['id'] . '" class="btn btn-' . $value['cor'] . '">' . $value['nome'] . '</button>';
+        }
+        $html = $html     . '</div>';
         return $html;
     }
 
-    public static function formEdit($codigo = true, $datas = true, $inputs, $nomeRecurso)
-    {   $var = new GeraHtml;
+    public static function formEdit($inputs, $btns, $nomeRecurso)
+    {
+        $var = new GeraHtml;
         $html = '<div id="' . $nomeRecurso . '-editar" style="display: none;">' . PHP_EOL;
-        $inputs = $var->inputs($codigo, $datas, $inputs);
-        $botoes = '<button id="salvar_' . $nomeRecurso . '" class="btn btn-success">Salvar</button>' 
-            . '<button id="delete_' . $nomeRecurso . '" class="btn btn-danger">Deletar</button>';
+        $inputs = $var->inputs($inputs);
+        $botoes = '';
+        foreach ($btns as $value) {
+            $botoes = $botoes . '<button id="' . $value['id'] . '" class="btn btn-' . $value['cor'] . '">' . $value['nome'] . '</button>';
+        }            
         $html = $html . $inputs . $botoes;
         $html = $html . '</div>';
         return $html;
     }
-    private function inputs($codigo, $datas, $inputs)
+    private function inputs($inputs)
     {
         $inp_codigo = "";
         $inp_geral = "";
         $inp_datas = "";
-        //Input Codigo
-        if ($codigo) {
-            $inp_codigo = '<div class="form-group">' . PHP_EOL
-                . '<label for="codigo">Codigo:</label>' . PHP_EOL
-                . '<input type="text" class="form-control" readonly id="codigo">' . PHP_EOL
-                . '</div>' . PHP_EOL;
-        }
+        //Input Codigo        
+        $inp_codigo = '<div class="form-group">' . PHP_EOL
+            . '<label for="codigo">Codigo:</label>' . PHP_EOL
+            . '<input type="text" class="form-control" readonly id="codigo">' . PHP_EOL
+            . '</div>' . PHP_EOL;
         // Inputs Gerais
-        $inp_geral = "";
-
         foreach ($inputs as $key => $value) {
             $inp_geral = $inp_geral . $this->criaInput($value);
         }
-        // Inputs Datas
-        if ($datas) {
-            $inp_datas = '<div class="form-group">'
-                . '<label for="dataCriacao">Data Criação:</label>'
-                . '<input type="text" class="form-control" readonly id="dataCriacao">'
-                . '</div>'
-                . '<div class="form-group">'
-                . '<label for="dataAtu">Data Atualização:</label>'
-                . '<input type="text" class="form-control" readonly id="dataAtu">'
-                . '</div>';
-        }
+        // Inputs Datas        
+        $inp_datas = '<div class="form-group">'
+            . '<label for="dataCriacao">Data Criação:</label>'
+            . '<input type="text" class="form-control" readonly id="dataCriacao">'
+            . '</div>'
+            . '<div class="form-group">'
+            . '<label for="dataAtu">Data Atualização:</label>'
+            . '<input type="text" class="form-control" readonly id="dataAtu">'
+            . '</div>';
+
         return $inp_codigo . $inp_geral . $inp_datas;
     }
     private function criaInput($dados)
