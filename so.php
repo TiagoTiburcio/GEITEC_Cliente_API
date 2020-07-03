@@ -1,29 +1,17 @@
 <?php
 require_once("class/principal.php");
-$nomeRecurso = 'usuario';
+$nomeRecurso = 'so';
 $input = [
     [
-        'nome' => 'usuario',
+        'nome' => 'nome',
         'tipo_input' => "text",
-        'descricao' => "Usuario",
+        'descricao' => "Nome",
         'table' => true
     ],
     [
         'nome' => 'descricao',
         'tipo_input' => "text",
-        'descricao' => "Descricao",
-        'table' => true
-    ],
-    [
-        'nome' => 'tipo_usuario',
-        'tipo_input' => "text",
-        'descricao' => "Tipo Usuario",
-        'table' => true
-    ],
-    [
-        'nome' => 'codigo_servico',
-        'tipo_input' => "text",
-        'descricao' => "Codigo Serviço",
+        'descricao' => "Nome",
         'table' => true
     ]
 ];
