@@ -136,44 +136,48 @@ echo $principal->cabecalho();
 
     function Temporizador(initiate) {
         if (initiate !== true) {
-            var inp_codigo = $("#codigo").val();
-            var div_listar = $("#rede-listar");
-            var btn_del = $("#delete_rede");
-            var btn_cria_ips = $("#cria_todos");
-            var btn_libera_ips = $("#libera_todos");
-            var btn_exclui_ips = $("#exclui_todos");
-            if ((inp_codigo == 0) && (div_listar.attr("style") == "display: none;")) {
-                btn_del.attr("style", "display: none;");
-                btn_cria_ips.attr("style", "display: none;");
-                btn_exclui_ips.attr("style", "display: none;");
-                btn_libera_ips.attr("style", "display: none;");
-            } else {
-                if ((inp_codigo != $("#inp_usuario").text()) && (div_listar.attr("style") == "display: none;")) {
-                    var cad_ip = getTodos("rede/" + inp_codigo);
-                    cad_ip.done(function(data) {
-                        if (data.qtd_ips != 0) {
-                            btn_del.attr("style", "display: none;");
-                            btn_cria_ips.attr("style", "display: none;");
-                            btn_exclui_ips.attr("style","");
-                            btn_libera_ips.attr("style","");
-                            if (data.ips_vinculado == 0) {
-                                btn_exclui_ips.attr("style", "");
-                                btn_libera_ips.attr("style", "display: none;");
-                            } else {
-                                btn_exclui_ips.attr("style", "display: none;");
-                                btn_libera_ips.attr("style", "");
-                            }
-                        } else {
-                            btn_del.attr("style", "");
-                            btn_cria_ips.attr("style", "");
-                        }
-                    });
-                }
-            }
+            visibilidadeBotoesFormEdit();
         }
         setTimeout(Temporizador, 3000);
     }
 
+    function visibilidadeBotoesFormEdit() {
+        var inp_codigo = $("#codigo").val();
+        var div_listar = $("#rede-listar");
+        var btn_del = $("#delete_rede");
+        var btn_cria_ips = $("#cria_todos");
+        var btn_libera_ips = $("#libera_todos");
+        var btn_exclui_ips = $("#exclui_todos");
+        if ((inp_codigo == 0) && (div_listar.attr("style") == "display: none;")) {
+            btn_del.attr("style", "display: none;");
+            btn_cria_ips.attr("style", "display: none;");
+            btn_exclui_ips.attr("style", "display: none;");
+            btn_libera_ips.attr("style", "display: none;");
+        } else {
+            if ((inp_codigo != $("#inp_usuario").text()) && (div_listar.attr("style") == "display: none;")) {
+                var cad_ip = getTodos("rede/" + inp_codigo);
+                cad_ip.done(function(data) {
+                    if (data.qtd_ips != 0) {
+                        btn_del.attr("style", "display: none;");
+                        btn_cria_ips.attr("style", "display: none;");
+                        btn_exclui_ips.attr("style", "");
+                        btn_libera_ips.attr("style", "");
+                        if (data.ips_vinculado == 0) {
+                            btn_exclui_ips.attr("style", "");
+                            btn_libera_ips.attr("style", "display: none;");
+                        } else {
+                            btn_exclui_ips.attr("style", "display: none;");
+                            btn_libera_ips.attr("style", "");
+                        }
+                    } else {
+                        btn_del.attr("style", "");
+                        btn_cria_ips.attr("style", "");
+                    }
+                });
+            }
+        }
+    }
+    
     $(function() {
         Temporizador(true);
     });

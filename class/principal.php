@@ -31,7 +31,7 @@ class Principal
         // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3Esvv6MfPo3ToCYonYY2nsc7SAuM0owlkEh62XHU
         // seduc
         // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.CoshUvB4nV9VFw0HYyNddBqTORy1UpF21siLS6wWMM4
-        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.CoshUvB4nV9VFw0HYyNddBqTORy1UpF21siLS6wWMM4";
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvIjoidGlhZ29jIn0.L-j3Esvv6MfPo3ToCYonYY2nsc7SAuM0owlkEh62XHU";
 
         return $token;
     }
@@ -68,6 +68,7 @@ class Principal
             . $js->btnSave($this->nomeRecurso, $this->inputs)
             . $js->btnDel($this->nomeRecurso)
             . $js->carregaLista($this->nomeRecurso, $this->inputs)
+            . $js->filtraTable()
             . $js->montaEdit($this->nomeRecurso, $this->inputs)
             . $js->carregaEdit($this->nomeRecurso, $this->inputs)
             . $js->addAjax($this->nomeRecurso, $this->inputs)

@@ -74,7 +74,7 @@ $btns_form = [
 
 $principal = new Principal($nomeRecurso, $input);
 $token = $principal->token();
-
+$js = new GeraJS();
 echo $principal->cabecalho();
 ?>
 
@@ -113,6 +113,9 @@ echo $principal->cabecalho();
         <button id="salvar_ip" class="btn btn-success">Salvar</button>
     </div>
     <div id="ip-listar" class="col-xs-12">
+        <div class="d-flex flex-row-reverse">
+            <div class="p-2"> <input class="form-control" id="filtro" type="text" placeholder="Busca.."> </div>
+        </div>
         <table id="lista" class="table table-striped table-condensed">
             <thead>
                 <tr>
@@ -129,6 +132,7 @@ echo $principal->cabecalho();
 <script src="js/jquery.js"></script>
 <script>
     var token = '<?= $token; ?>';
+    <?= $js->filtraTable(); ?>
 
     function getTodos(categoria) {
         var settings = {
@@ -321,6 +325,7 @@ echo $principal->cabecalho();
             carregaLista();
         }
     });
+
 
     $(function() {
         carregaLista();

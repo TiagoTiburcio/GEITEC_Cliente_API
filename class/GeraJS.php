@@ -268,7 +268,7 @@ class GeraJS
         }
         $retorno = $retorno . 'inp_dataCre.val(data.created_at)' . PHP_EOL
             . 'inp_dataAtu.val(data.updated_at);' . PHP_EOL
-            . '});     }' ;            
+            . '});     }';
         return $retorno;
     }
     public function carregaLista($nomeRecurso, $inputs)
@@ -302,6 +302,18 @@ class GeraJS
         return $retorno;
     }
 
+    public function filtraTable()
+    {
+        $retorno = '$(document).ready(function() {' . PHP_EOL
+            . '$("#filtro").on("keyup", function() {' . PHP_EOL
+            . 'var value = $(this).val().toLowerCase();' . PHP_EOL
+            . '$("#lista tbody tr").filter(function() {' . PHP_EOL
+            . '$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)' . PHP_EOL
+            . '});' . PHP_EOL
+            . '});' . PHP_EOL
+            . '});';
+        return $retorno;
+    }
 
     public function inputSelect($recurso, $nome, $codigo_recurso, $nome_recurso)
     {

@@ -94,6 +94,7 @@ class GeraHtml
     public static function criaLista($inputs, $nomeRecurso)
     {
         $html = '<div id="' . $nomeRecurso . '-listar" class="col-xs-12">' . PHP_EOL
+            . '<div class="d-flex flex-row-reverse"> <div class="p-2"> <input class="form-control" id="filtro" type="text" placeholder="Busca.."> </div></div>' . PHP_EOL
             . '<table id="lista" class="table table-striped table-condensed">' . PHP_EOL
             . '<thead>' . PHP_EOL
             . '<tr>' . PHP_EOL;
