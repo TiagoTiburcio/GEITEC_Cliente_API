@@ -10,14 +10,14 @@ class GeraHtml
 {
     public static function cabecalho($nomeRecurso)
     {
-        $html = '<!DOCTYPE html>'
-            . '<html lang="en">'
-            . '<head>'
-            . '<meta charset="UTF-8">'
-            . '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
-            . '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">'
-            . '<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">'
-            . '<title>' . strtoupper($nomeRecurso) . ' Adm</title>'
+        $html = '<!DOCTYPE html>' . PHP_EOL
+            . '<html lang="en">' . PHP_EOL
+            . '<head>' . PHP_EOL
+            . '<meta charset="UTF-8">' . PHP_EOL
+            . '<meta name="viewport" content="width=device-width, initial-scale=1.0">' . PHP_EOL
+            . '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">' . PHP_EOL
+            . '<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">' . PHP_EOL
+            . '<title>' . strtoupper($nomeRecurso) . ' Adm</title>' . PHP_EOL
             . '</head>';
         return $html;
     }
